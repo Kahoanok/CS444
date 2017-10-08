@@ -63,6 +63,7 @@ while(1){
 }   
 }
 
+
 void * consumer_start(void *x){
 struct thing* temp;
 while(1){
@@ -94,4 +95,5 @@ for(c=0;c<5;c++){
 	pthread_create(&(cons[c]),NULL,consumer_start,NULL);
 }
 while(1){}
+return 0;
 }
