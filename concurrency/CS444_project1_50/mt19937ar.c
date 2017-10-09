@@ -41,8 +41,6 @@
    email: m-mat @ math.sci.hiroshima-u.ac.jp (remove space)
 */
 
-//Shawn Cross and Ryan Crane
-
 #include <stdio.h>
 
 /* Period parameters */  
