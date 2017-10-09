@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=latex 2017.9.1)  9 OCT 2017 13:01
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=latex 2017.9.1)  9 OCT 2017 13:04
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -463,28 +463,73 @@ Underfull \hbox (badness 10000) in paragraph at lines 46--65
 [1
 
 ] [2]
-LaTeX Font Info:    Try loading font information for U+msa on input line 133.
+LaTeX Font Info:    Try loading font information for U+msa on input line 134.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 133.
+LaTeX Font Info:    Try loading font information for U+msb on input line 134.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Overfull \hbox (78.1309pt too wide) in paragraph at lines 133--144
+Overfull \hbox (78.1309pt too wide) in paragraph at lines 134--145
  [] 
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 166.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 160.
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--160
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--160
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--160
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--160
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--160
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--160
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--160
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--160
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--160
+
+ []
+
 [3]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 166.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 160.
  (./HW1.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 166.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 166.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 160.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 160.
 Package rerunfilecheck Info: File `HW1.out' has not changed.
 (rerunfilecheck)             Checksum: 350C1E62E821F12961F787FB2E58C01A;491.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 166.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 160.
  ) 
 Here is how much of TeX's memory you used:
  6461 strings out of 495064
@@ -495,4 +540,4 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  29i,6n,28p,218b,325s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on HW1.dvi (3 pages, 13732 bytes).
+Output written on HW1.dvi (3 pages, 13808 bytes).
