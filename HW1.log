@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=latex 2017.9.1)  8 OCT 2017 16:41
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=latex 2017.9.1)  8 OCT 2017 17:25
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -382,23 +382,37 @@ LaTeX Info: Redefining \nameref on input line 45.
  [1
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 115.
- [2]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 115.
+LaTeX Font Info:    Try loading font information for U+msa on input line 114.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 114.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+Overfull \hbox (78.1309pt too wide) in paragraph at lines 114--122
+ [] 
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 126.
+[2]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 126.
  (./HW1.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 115.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 115.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 126.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 126.
 Package rerunfilecheck Info: File `HW1.out' has not changed.
-(rerunfilecheck)             Checksum: 59AB75A270691ADF0063EC7DC506F11E;394.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 115.
+(rerunfilecheck)             Checksum: 556A7A4F540218D990FD50213C88696A;448.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 126.
  ) 
 Here is how much of TeX's memory you used:
- 6430 strings out of 495064
- 93037 string characters out of 3182225
- 183594 words of memory out of 3000000
- 9570 multiletter control sequences out of 15000+200000
- 4245 words of font info for 16 fonts, out of 3000000 for 9000
+ 6460 strings out of 495064
+ 93522 string characters out of 3182225
+ 183686 words of memory out of 3000000
+ 9587 multiletter control sequences out of 15000+200000
+ 5944 words of font info for 24 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
- 29i,5n,28p,218b,325s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 29i,6n,28p,218b,325s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on HW1.dvi (2 pages, 9444 bytes).
+Output written on HW1.dvi (2 pages, 10576 bytes).
