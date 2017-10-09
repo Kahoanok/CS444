@@ -18,8 +18,6 @@
 \usepackage{geometry}
 \geometry{textheight=8.5in, textwidth=6in}
 
-%random comment
-
 \newcommand{\cred}[1]{{\color{red}#1}}
 \newcommand{\cblue}[1]{{\color{blue}#1}}
 
@@ -45,6 +43,27 @@
 \begin{document}
 
 \section{Log of Commands}
+Fist we cloned the linux-yocto-3.19 git hub repo into our group 50 directory. 
+We then sourced the directory using\\source ../../files/environment-setup-
+i586-poky-linux\\then we moved the config file into the yocto directoy 
+using the command\\cp ../../../files/config-3.19.2-standard .config\\ and 
+then ran the command\\make menuconfig\\ to change the local version name.
+after we had that setup we then tested that the kernel worked by coping the
+bzImage-qemux86.bin file and the core-image-lsb-sdk-qemux86.ext4 file into
+our yocto directory. we then ran the command\\qemu-system-i386 -gdb tcp::5550
+-S -nographic -kernel bzImage-qemux86.bin -drive 
+file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb 
+-localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"\\ to 
+start the vm in a halted state. Next we used gdb to connect to the vm remotly 
+by using the commands\\\$GDB\\target remote os2:5550\\Finally we built our 
+kernel by running\\make -j4 all\\
+and then test that it worked by running the vm again and using the new bzImage 
+qemu-system-i386 -gdb tcp::???? -S -nographic -kernel  arch/x86/boot/bzImage 
+-drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none 
+-usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"\\
+and then re-ran gdb to connect remotly.
+
+
 
 \section{Concurrency Solution}
 We create ten threads, five producer threads, and five comsumer threads. The
