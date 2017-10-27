@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=latex 2016.10.17)  26 OCT 2017 19:16
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=latex 2016.10.17)  26 OCT 2017 19:29
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -497,4 +497,4 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  29i,6n,26p,226b,343s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on philosopher.dvi (2 pages, 5464 bytes).
+Output written on philosopher.dvi (2 pages, 5460 bytes).
