@@ -1,4 +1,5 @@
 #Shawn Cross and Ryan Crane
+
 LATEX	= latex -shell-escape
 #BIBTEX	= bibtex
 DVIPS	= dvips
@@ -42,8 +43,14 @@ showps: $(PSF)
 
 all: pdf
 
+CC=gcc
+CFLAGS= -lpthread
+
+noodles: noodles.c
+	$(CC) -o noodles noodles.c $(CFLAGS)
+
 clean:
-	rm -f *.pdf *.ps *.dvi *.out *.log *.aux *.bbl *.blg *.pyg
+	rm -f *.pdf *.ps *.dvi *.out *.log *.aux *.bbl *.blg *.pyg noodles
 
 .PHONY: all show clean ps pdf showps
 
