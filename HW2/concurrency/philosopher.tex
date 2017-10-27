@@ -67,7 +67,7 @@ since they all needed to be numbered and named. These funcion consist of a
 while loop that will run forever and repeatedly call the think, pick up fork, 
 eat, and put down fork functions. once we had these funcitons we created the 
 functions for picking up and putting down the forks which is the same as the 
-solution in the litlle book of semaphores and is to wait on the footman and 
+solution in the little book of semaphores and is to wait on the footman and 
 then to wait on the right fork and then the left. The put down function is 
 the exact opposite uses post on the left and right fork and then post on the 
 footman. The forks are an array of semaphores that are all initially set to 
