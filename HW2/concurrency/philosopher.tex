@@ -1,0 +1,75 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+%\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+%\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Ryan Crane and Shawn Cross}
+
+%pull in the necessary preamble matter for pygments output
+%\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs444 ``operating systems'' files filesystem I/O},
+  pdftitle = {CS 444 Project 1: UNIX File I/O},
+  pdfsubject = {CS 444 Project 1},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+\title{Philosopher Problem}
+\date{October 26, 2017}
+\author{Shawn Cross, Ryan Crane}
+\maketitle
+
+To run the program:\\
+
+To figure out a solution to this problem we used the little book of semaphores. 
+specifically we used the footman solution. First we created the functions for 
+thinking and eating and used the Mersenne Twister for getting the random times. 
+Once we had the functions created we made the threads for the philosophers and 
+the fork and footman semaphores. We first just created one start function for 
+all of the theads but then realized that we would need to create one for each 
+since they all needed to be numbered and nameded. These funcion consist of a 
+while loop that will run forever and reapatedly call the think, pick up fork, 
+eat, and put down fork functions. once we had these funcitons we created the 
+functions for picking up and putting down the forks which is the same a the 
+solution in the litlle book of semaphores and is to wait on the footman and 
+then to wait on the right fork and then the left. The put down function is 
+the exact opposite uses post on the left and right fork and then post on the 
+footman. The forks are an array of semaphores that are all initially set to 
+one so when a philosopher use wait on the fork it will block until they are 
+done eating and then put it back down. The footman is initialiezd to four and 
+will block before all five people could pick up a fork keeping there from being 
+a deadlock. 
+
+We can see that given a time frame between 30 and 60 seconds that all of the 
+philosophers are eatting at least one time and no fork is ever being picked 
+up by two philosophers at the same time either. 
+
+\end{document}
