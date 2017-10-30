@@ -41,15 +41,21 @@
 }
 
 \begin{document}
-We modified the the dispatch and add functions to implement the look algorithm 
-for the scheduler. We made it so that you can go both forward and backward in 
-the dispatch function when finding the next request to dispatch. If the 
-distance to a request in the opposite direction is closer than a request in 
-the current direction the direction will change. The queue sorted after a 
-request has been dispatched. If the queue is empty then we add the new 
-requests directly to the queue. If there is already requests in the queue 
-then when adding then we sort during the insertion. the requests are 
-inserted into the queue based on position. 
+
+\title{CS4444 Project 2}
+\date{October 30, 2017}
+\author{Shawn Cross, Ryan Crane}
+\maketitle
+
+We plan to modified the the dispatch and add functions from the original noop 
+scheduler to implement the LOOK algorithm for the scheduler. We made it so that 
+you can go both forward and backward in the dispatch function when finding the 
+next request to dispatch. If the distance to a request in the opposite 
+direction is closer than a request in the current direction the direction will 
+change. The queue sorted after a request has been dispatched. If the queue is 
+empty then we add the new requests directly to the queue. If there is already 
+requests in the queue then when adding then we sort during the insertion. the 
+requests are inserted into the queue based on position. 
 
 \section{Version Control log}
 \input{changes.tex}
@@ -80,7 +86,7 @@ cat /sys/block/hda/queue/scheduler
 
 and got an output
 
-noop \[sstf\] deadline cfq
+noop [sstf] deadline cfq
 
 this shows that our sstf scheduler is being used as we wanted. We then 
 added print statements to our scheduler code so that we could determine 
