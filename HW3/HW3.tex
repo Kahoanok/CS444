@@ -61,9 +61,16 @@ it.
 \section{Project Questions}
 
 \subsection{Main point of the assignment}
-
+The main point of this assignment was to learn how linux modules and device drivers work, 
+as well as gaining some experience with linux's crypto api. 
 \subsection{How did we approach the problem}
+We began by finding a working block device driver to use as a base. Then we looked for examples 
+where linux's cryptographic tools were used to determine how to add encryption to the device. We chose
+ to use AES as our block cipher with a default key of all zeros when the module parameter is blank.
 
 \subsection{What did we learn}
+We learned that all linux documentation is terrible. We also learned about manipulating 
+block ciphers in linux and setting module parameters, and loading them into linux. we also had
+to mount a block device and create a filesystem for it.
 
 \end{document}
