@@ -1,0 +1,45 @@
+\begin{tabular}{l l l}\textbf{Detail} & \textbf{Author} & \textbf{Description}\\\hline
+\href{https://github.com/crosssh/CS444/commit/becc564dd922e6628b2dd56d838d548952381ba4}{becc564} & Shawn Cross & initial commit\\\hline
+\href{https://github.com/crosssh/CS444/commit/f749308a6c02d580b826115e7106b84e01921e39}{f749308} & Ryan Crane & concurrency\\\hline
+\href{https://github.com/crosssh/CS444/commit/33586339433712c3e950c83b08b50ec86d3cbe3f}{3358633} & Shawn Cross & updating the tex file And adding the pdf\\\hline
+\href{https://github.com/crosssh/CS444/commit/69a0bfe623b7e7683d814cc82f43ad5bfe9c3709}{69a0bfe} & Shawn Cross & changes to the tex file.\\\hline
+\href{https://github.com/crosssh/CS444/commit/9ae28e60d49dc47fec5211f4c9e1b1b9c776c909}{9ae28e6} & Ryan Crane & tables\\\hline
+\href{https://github.com/crosssh/CS444/commit/055e09d511ce9e24575acd974518b92079fd7a56}{055e09d} & narxy & Update HW1.tex\\\hline
+\href{https://github.com/crosssh/CS444/commit/80663df0d3e7639797347ef3528e5fad377b6114}{80663df} & Ryan Crane & hlines\\\hline
+\href{https://github.com/crosssh/CS444/commit/3d7e47c63f7f25cd6286e6ed750f65865d61c5eb}{3d7e47c} & Shawn Cross & updating the tex file\\\hline
+\href{https://github.com/crosssh/CS444/commit/529a49c02f32c51213db25c71f670797afd33e8d}{529a49c} & Shawn Cross & more small changes to the tex file.\\\hline
+\href{https://github.com/crosssh/CS444/commit/bbcb2edf9e0c3c54f31a9901c78dea08601d82b8}{bbcb2ed} & Shawn Cross & more changes to the tex file.\\\hline
+\href{https://github.com/crosssh/CS444/commit/ed4f468517b748c050c472d79f8a5708a0b29bae}{ed4f468} & Shawn Cross & forgot to update the pdf.\\\hline
+\href{https://github.com/crosssh/CS444/commit/bc8ab8649fb63f33bee3d7b238e4dd4f46c2e669}{bc8ab86} & Shawn Cross & adding the work log.\\\hline
+\href{https://github.com/crosssh/CS444/commit/8579b74b79e29e194cea0200df4acd6e87689aaa}{8579b74} & Shawn Cross & more changes.\\\hline
+\href{https://github.com/crosssh/CS444/commit/0e8c9948947a7fff711f616d3fcc25015a4a7d51}{0e8c994} & Shawn Cross & Final changes to the tex document.\\\hline
+\href{https://github.com/crosssh/CS444/commit/ca00e679905ff0ddd7becab23c88f33826e35db8}{ca00e67} & Shawn Cross & For real final changes.\\\hline
+\href{https://github.com/crosssh/CS444/commit/734f5557a5019357f359d31c2b8460e75f5a90db}{734f555} & Shawn Cross & One more change.\\\hline
+\href{https://github.com/crosssh/CS444/commit/0e64d532dc7d152515db587be631cfb8969a80ad}{0e64d53} & Shawn Cross & adding the tar ball\\\hline
+\href{https://github.com/crosssh/CS444/commit/88e93dc7f5e10022f61dcc02707ab977045d02f0}{88e93dc} & Ryan Crane & dining philosophers problem, looks correct\\\hline
+\href{https://github.com/crosssh/CS444/commit/35c460c5834e37d3b7763cb8cf924fd1c60605aa}{35c460c} & Shawn Cross & adding the write up for the concurrency problem.\\\hline
+\href{https://github.com/crosssh/CS444/commit/3f0111c4029242fbff1abdbca709846e312de5e3}{3f0111c} & Shawn Cross & More done on the write up and made it so you can compile for the makefile.\\\hline
+\href{https://github.com/crosssh/CS444/commit/2d479602bacb4413c4926dc4d291da1999f4543c}{2d47960} & Shawn Cross & slight change to tex file.\\\hline
+\href{https://github.com/crosssh/CS444/commit/9aa562c78ee7ab1d2c149a0a110375449b559d34}{9aa562c} & narxy & Update philosopher.tex\\\hline
+\href{https://github.com/crosssh/CS444/commit/f8b1617c75f383036ef25a3ac7a69fd1960cee15}{f8b1617} & narxy & Update philosopher.tex\\\hline
+\href{https://github.com/crosssh/CS444/commit/651df07401865b4a7a8b049a5bb170d350407c4d}{651df07} & Shawn Cross & fixed spelling errors.\\\hline
+\href{https://github.com/crosssh/CS444/commit/75556889aec755f28b25f1c81b86fb31c7ff825c}{7555688} & Shawn Cross & uploading tarball and created the sstf-iosched.c file\\\hline
+\href{https://github.com/crosssh/CS444/commit/4bc64ff20f38125e7a8d84f16e1780b235ff3519}{4bc64ff} & Shawn Cross & Uptdate to the Kconfig file, update to the Makefile, update to menuconfig, and sstf-iosched.c added\\\hline
+\href{https://github.com/crosssh/CS444/commit/8f755a26af96f2442f987c1b32698b28f3ce6783}{8f755a2} & Shawn Cross & changes to the project write up\\\hline
+\href{https://github.com/crosssh/CS444/commit/b592f85de6764a1ddc53481919fa2f66ecc94bae}{b592f85} & Shawn Cross & finished the scheduler, added the patch file, and made some more changes to the write up.\\\hline
+\href{https://github.com/crosssh/CS444/commit/55a6e3ba04a8f8c3d043e52eb1bba93912be9971}{55a6e3b} & Shawn Cross & Added ta evaluation\\\hline
+\href{https://github.com/crosssh/CS444/commit/eed6956b184fcf6d0991607a1cf420a68a4c341f}{eed6956} & narxy & Update proj2.tex\\\hline
+\href{https://github.com/crosssh/CS444/commit/78b3550c2a5d3320acd46cbc6e9e187d67b37e76}{78b3550} & Shawn Cross & adding all\\\hline
+\href{https://github.com/crosssh/CS444/commit/48e39812d35aa3db2ffac2fcccb2ee0382fbcbe1}{48e3981} & Shawn Cross & Merge branch 'master' of https://github.com/crosssh/CS444\\\hline
+\href{https://github.com/crosssh/CS444/commit/28278eb1f821ec2c6c8617186f5780483206fe26}{28278eb} & Shawn Cross & work log added.\\\hline
+\href{https://github.com/crosssh/CS444/commit/a0eda18a531921400766c13355c7ef2d14322757}{a0eda18} & Shawn Cross & TA evaluation section and work log done\\\hline
+\href{https://github.com/crosssh/CS444/commit/38b7a2a398515679e2fdcc48855453ddf6c2b5bd}{38b7a2a} & Shawn Cross & fixing latex file.\\\hline
+\href{https://github.com/crosssh/CS444/commit/9ed40b83f0debb4b70842309e75360f2e28b7f73}{9ed40b8} & narxy & Update proj2.tex\\\hline
+\href{https://github.com/crosssh/CS444/commit/90d1de50b198916f6923122b7717a12fa764b3e1}{90d1de5} & Ryan Crane & tarball for project 2\\\hline
+\href{https://github.com/crosssh/CS444/commit/58d945d09783e98b84371897149de6d86787299b}{58d945d} & Ryan Crane & Merge branch 'master' of https://github.com/crosssh/CS444\\\hline
+\href{https://github.com/crosssh/CS444/commit/730953653ab00bd55699eef4f50f27252fe3d7b2}{7309536} & Ryan Crane & tarball for project 2\\\hline
+\href{https://github.com/crosssh/CS444/commit/90c833816bad716ceedd20fe1b47ce2d5822b3e0}{90c8338} & Shawn Cross & git sucks so bad.\\\hline
+\href{https://github.com/crosssh/CS444/commit/c258d8693943c8d485286b946f36b00db533652c}{c258d86} & narxy & Update HW3.tex\\\hline
+\href{https://github.com/crosssh/CS444/commit/6ee4b6b1f3698e604beb00abe07b3988e9ab4f29}{6ee4b6b} & Shawn Cross & finished the crytpo working on write up\\\hline
+\href{https://github.com/crosssh/CS444/commit/36001ddeb5eecb218672829156a124c4a0971a8e}{36001dd} & crosssh & update to the tex file\\\hline
+\href{https://github.com/crosssh/CS444/commit/625287fc9915eb508139598719b3c66a33ecc80e}{625287f} & Shawn Cross & finishing up the write up\\\hline\end{tabular}
