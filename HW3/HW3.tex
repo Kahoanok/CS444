@@ -67,7 +67,57 @@ as well as gaining some experience with linux's crypto api.
 We began by finding a working block device driver to use as a base. Then we looked for examples 
 where linux's cryptographic tools were used to determine how to add encryption to the device. We chose
  to use AES as our block cipher with a default key of all zeros when the module parameter is blank.
-
+\subsection{Ensure correctness and details of how to preform}
+\section{TA Evaluation}
+Steps for applying patch to clean linux-yocto-3.19 tree.\\\\
+\begin{enumerate}
+\item{step 1: }
+   clone new repo from github using the command\\\\
+   git clone git://git.yoctoproject.org/linux-yocto-3.19
+\item{step 2: }
+   switch to the 3.19.2 by using the command\\\\
+   git checkout -b linux-yocto-3.19.2
+\item{step 3: }
+   copy the file /scratch/fall2017/files/config-3.19.2-yocto-qemu into a file 
+   named .config into the source root of the repo that you just cloned.
+\item{step 4: }
+   Now source the environment configuration. If you are using bash you will 
+   need to source /scratch/fall2017/files/environment-setup-i586-poky-linux 
+   and if you are using tcsh you will need  to source 
+   /scratch/fall2017/files/environment-setup-i586-poky-linux.csh
+\item{step 5: }
+   You need to apply the patch we provided to the repo by using the command\\\\
+   git apply [path to patch file] where path to patch file is the path you need 
+   to the patch file that we have provided.
+\item{step 6: }
+   You now need to make the kernel by running the command make -j4 
+\item{step 7: }
+   Once the kernel is created you will need to run the vm using the command\\\\
+   qemu-system-i386 -gdb tcp::5550 -S -nographic -kernel [path to bzImage] -drive file=[path to core image],if=virtio -enable-kvm -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"\\\\
+   Where [path to core image] is the file found in\\\\ 
+   /scratch/fall2017/files/core-image-lsb-sdk-qemux86.ext4\\\\
+   and the [path to bzImage] for me would be the bzImage found in\\\\
+   linux-yocto-3.19/arch/x86/boot/bzImage\\\\
+   and the ???? are the port number that you want to connect gdb to remotely.\\\\
+   After this command is run the terminal will halt.
+\item{step 8: }
+   you will now need to run \$GDB in a new terminal window. You may need soucre 
+   the enviroment again as you did in step 4 previously if you did start a new 
+   termial session and the \$GDB command does not work. Once gdb is running you 
+   will use the command\\\\
+   target remote :????\\\\
+   where the ???? are the same as the port that you had specified in step 7.\\\\
+   then type continue and the first terminal should start.
+\item{step 9:}
+   You need to then scp the sbull.ko file in and then scp the provided script test.sh.
+\item{step 10:}
+   Type echo 'hello world' > tempmount/hello\\
+   Then type cat tempmount/hello
+   This shows that the data being entered is different than what is acutally being stored and that once the data is decrypted the data is back to 
+   it's original form.
+   
+   
+\end{enumerate}
 \subsection{What did we learn}
 We learned that all linux documentation is terrible. We also learned about manipulating 
 block ciphers in linux and setting module parameters, and loading them into linux. we also had
