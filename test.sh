@@ -12,4 +12,5 @@ echo w
 echo
 sleep 2
 mkfs.ext2 /dev/sbulla
-mount /dev/sbulla tempmont
+mkdir tempmount
+mount /dev/sbulla tempmount

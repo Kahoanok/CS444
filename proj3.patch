@@ -1,0 +1,621 @@
+diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+index 014a1cf..550a69c 100644
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -18,6 +18,12 @@ if BLK_DEV
+ config BLK_DEV_NULL_BLK
+ 	tristate "Null test block driver"
+ 
++config BLK_DEV_SBULL
++	tristate "HW3 SBULL block device"
++	---help---
++	  HW3 block device.
++
++
+ config BLK_DEV_FD
+ 	tristate "Normal floppy disk support"
+ 	depends on ARCH_MAY_HAVE_PC_FDC
+diff --git a/drivers/block/Makefile b/drivers/block/Makefile
+index 02b688d..218e336 100644
+--- a/drivers/block/Makefile
++++ b/drivers/block/Makefile
+@@ -44,6 +44,8 @@ obj-$(CONFIG_BLK_DEV_RSXX) += rsxx/
+ obj-$(CONFIG_BLK_DEV_NULL_BLK)	+= null_blk.o
+ obj-$(CONFIG_ZRAM) += zram/
+ 
++obj-$(CONFIG_BLK_DEV_SBULL) += sbull.o
++
+ nvme-y		:= nvme-core.o nvme-scsi.o
+ skd-y		:= skd_main.o
+ swim_mod-y	:= swim.o swim_asm.o
+diff --git a/drivers/block/sbull.c b/drivers/block/sbull.c
+new file mode 100644
+index 0000000..d6b5d10
+--- /dev/null
++++ b/drivers/block/sbull.c
+@@ -0,0 +1,508 @@
++/*
++ * Sample disk driver, from the beginning.
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++
++#include <linux/sched.h>
++#include <linux/kernel.h>	/* printk() */
++#include <linux/slab.h>		/* kmalloc() */
++#include <linux/fs.h>		/* everything... */
++#include <linux/errno.h>	/* error codes */
++#include <linux/timer.h>
++#include <linux/types.h>	/* size_t */
++#include <linux/fcntl.h>	/* O_ACCMODE */
++#include <linux/hdreg.h>	/* HDIO_GETGEO */
++#include <linux/kdev_t.h>
++#include <linux/vmalloc.h>
++#include <linux/genhd.h>
++#include <linux/blkdev.h>
++#include <linux/buffer_head.h>	/* invalidate_bdev */
++#include <linux/bio.h>
++#include <linux/crypto.h>
++
++MODULE_LICENSE("Dual BSD/GPL");
++
++static int sbull_major = 0;
++module_param(sbull_major, int, 0);
++static int hardsect_size = 512;
++module_param(hardsect_size, int, 0);
++static int nsectors = 1024;	/* How big the drive is */
++module_param(nsectors, int, 0);
++static int ndevices = 4;
++module_param(ndevices, int, 0);
++static char *key = "00000000000000000000000000000000";
++module_param(key, charp, 0400);
++
++/*
++ * The different "request modes" we can use.
++ */
++enum {
++	RM_SIMPLE  = 0,	/* The extra-simple request function */
++	RM_FULL    = 1,	/* The full-blown version */
++	RM_NOQUEUE = 2,	/* Use make_request */
++};
++static int request_mode = RM_SIMPLE;
++module_param(request_mode, int, 0);
++
++/*
++ * Minor number and partition management.
++ */
++#define SBULL_MINORS	16
++#define MINOR_SHIFT	4
++#define DEVNUM(kdevnum)	(MINOR(kdev_t_to_nr(kdevnum)) >> MINOR_SHIFT
++
++/*
++ * We can tweak our hardware sector size, but the kernel talks to us
++ * in terms of small sectors, always.
++ */
++#define KERNEL_SECTOR_SHIFT	9
++#define KERNEL_SECTOR_SIZE	(1<<KERNEL_SECTOR_SHIFT)
++
++#define KEY_SIZE 32
++
++/*
++ * After this much idle time, the driver will simulate a media change.
++ */
++#define INVALIDATE_DELAY	30*HZ
++
++/*
++ * The internal representation of our device.
++ */
++struct sbull_dev {
++        int size;                       /* Device size in sectors */
++        u8 *data;                       /* The data array */
++        short users;                    /* How many users */
++        short media_change;             /* Flag a media change? */
++        spinlock_t lock;                /* For mutual exclusion */
++        struct request_queue *queue;    /* The device request queue */
++        struct gendisk *gd;             /* The gendisk structure */
++        struct timer_list timer;        /* For simulated media changes */
++	struct crypto_cipher *cipher;
++};
++
++static struct sbull_dev *Devices = NULL;
++
++static int bytes_to_sectors_checked(unsigned long bytes)
++{
++	if( bytes % KERNEL_SECTOR_SIZE )
++	{
++		printk("***************WhatTheFuck***********************\n");
++	}
++	return bytes / KERNEL_SECTOR_SIZE;
++}
++
++/*
++ * Handle an I/O request.
++ */
++static void sbull_transfer(struct sbull_dev *dev, unsigned long sector,
++		unsigned long nsect, char *buffer, int write)
++{
++	unsigned long offset = sector*KERNEL_SECTOR_SIZE;
++	unsigned long nbytes = nsect*KERNEL_SECTOR_SIZE;
++
++	unsigned long blocksize = crypto_cipher_blocksize(dev->cipher);
++	int i;
++
++	//nbytes += blocksize - (nbytes%blocksize);
++
++	if ((offset + nbytes) > dev->size) {
++		printk (KERN_NOTICE "Beyond-end write (%ld %ld)\n", offset, nbytes);
++		return;
++	}
++	if (write){
++	   //memcpy(dev->data + offset, buffer, nbytes);
++	   printk("%u\n", (unsigned) buffer );
++	   for( i = 0; i < nbytes; i += blocksize) {
++	      crypto_cipher_encrypt_one(dev->cipher,dev->data + offset+i, buffer+ i);
++	   }
++	   printk("%u\n", (unsigned) (dev->data + offset));
++
++	} else {
++	   //memcpy(buffer, dev->data + offset, nbytes);
++	   printk("%u\n", (unsigned) (dev->data + offset));
++	for ( i = 0; i < nbytes; i += blocksize) {
++		crypto_cipher_decrypt_one(dev->cipher, buffer + i, dev->data + offset + i);
++	}
++	printk("%u\n", (unsigned) buffer);
++	}
++}
++
++/*
++ * The simple form of the request function.
++ */
++static void sbull_request(struct request_queue *q)
++{
++	struct request *req;
++	int ret;
++
++	req = blk_fetch_request(q);
++	while (req) {
++		struct sbull_dev *dev = req->rq_disk->private_data;
++		if (req->cmd_type != REQ_TYPE_FS) {
++			printk (KERN_NOTICE "Skip non-fs request\n");
++			ret = -EIO;
++			goto done;
++		}
++		printk (KERN_NOTICE "Req dev %u dir %d sec %ld, nr %d\n",
++			(unsigned)(dev - Devices), rq_data_dir(req),
++			blk_rq_pos(req), blk_rq_cur_sectors(req));
++		sbull_transfer(dev, blk_rq_pos(req), blk_rq_cur_sectors(req),
++				bio_data(req->bio), rq_data_dir(req));
++		ret = 0;
++	done:
++		if(!__blk_end_request_cur(req, ret)){
++			req = blk_fetch_request(q);
++		}
++	}
++}
++
++/*
++ * Transfer a single BIO.
++ */
++static int sbull_xfer_bio(struct sbull_dev *dev, struct bio *bio)
++{
++	struct bio_vec bvec;
++	struct bvec_iter iter;
++	sector_t sector = bio->bi_iter.bi_sector;
++
++	/* Do each segment independently. */
++	bio_for_each_segment(bvec, bio, iter) {
++		char *buffer = __bio_kmap_atomic(bio, iter);
++		sbull_transfer(dev, sector,bytes_to_sectors_checked(bio_cur_bytes(bio)),
++				buffer, bio_data_dir(bio) == WRITE);
++		sector += (bytes_to_sectors_checked(bio_cur_bytes(bio)));
++		__bio_kunmap_atomic(bio);
++	}
++	return 0; /* Always "succeed" */
++}
++
++
++/*
++ * Transfer a full request.
++ */
++static int sbull_xfer_request(struct sbull_dev *dev, struct request *req)
++{
++	struct bio *bio;
++	int nsect = 0;
++
++	__rq_for_each_bio(bio, req) {
++		sbull_xfer_bio(dev, bio);
++		nsect += bio->bi_iter.bi_size/KERNEL_SECTOR_SIZE;
++	}
++	return nsect;
++}
++
++
++
++/*
++ * Smarter request function that "handles clustering".
++ */
++static void sbull_full_request(struct request_queue *q)
++{
++	struct request *req;
++	struct sbull_dev *dev = q->queuedata;
++	int ret;
++
++	while ((req = blk_fetch_request(q)) != NULL) {
++		if (req->cmd_type != REQ_TYPE_FS) {
++			printk (KERN_NOTICE "Skip non-fs request\n");
++			ret = -EIO;
++			goto done;
++		}
++		sbull_xfer_request(dev, req);
++		ret = 0;
++	done:
++		__blk_end_request_all(req, ret);
++	}
++}
++
++
++
++/*
++ * The direct make request version.
++ */
++static void sbull_make_request(struct request_queue *q, struct bio *bio)
++{
++	struct sbull_dev *dev = q->queuedata;
++	int status;
++
++	status = sbull_xfer_bio(dev, bio);
++	bio_endio(bio, status);
++	//bio->bi_status = status;
++	//bio_endio(bio);
++	//return BLK_QC_T_NONE;
++}
++
++
++/*
++ * Open and close.
++ */
++
++static int sbull_open(struct block_device *bdev, fmode_t mode)
++{
++	struct sbull_dev *dev = bdev->bd_disk->private_data;
++
++	del_timer_sync(&dev->timer);
++	spin_lock(&dev->lock);
++if (! dev->users)
++		check_disk_change(bdev);
++	dev->users++;
++	spin_unlock(&dev->lock);
++	return 0;
++}
++
++static void sbull_release(struct gendisk *disk, fmode_t mode)
++{
++	struct sbull_dev *dev = disk->private_data;
++
++	spin_lock(&dev->lock);
++	dev->users--;
++
++	if (!dev->users) {
++		dev->timer.expires = jiffies + INVALIDATE_DELAY;
++		add_timer(&dev->timer);
++	}
++	spin_unlock(&dev->lock);
++
++}
++
++/*
++ * Look for a (simulated) media change.
++ */
++int sbull_media_changed(struct gendisk *gd)
++{
++	struct sbull_dev *dev = gd->private_data;
++
++	return dev->media_change;
++}
++
++/*
++ * Revalidate.  WE DO NOT TAKE THE LOCK HERE, for fear of deadlocking
++ * with open.  That needs to be reevaluated.
++ */
++int sbull_revalidate(struct gendisk *gd)
++{
++	struct sbull_dev *dev = gd->private_data;
++
++	if (dev->media_change) {
++		dev->media_change = 0;
++		memset (dev->data, 0, dev->size);
++	}
++	return 0;
++}
++
++/*
++ * The "invalidate" function runs out of the device timer; it sets
++ * a flag to simulate the removal of the media.
++ */
++void sbull_invalidate(unsigned long ldev)
++{
++	struct sbull_dev *dev = (struct sbull_dev *) ldev;
++
++	spin_lock(&dev->lock);
++if (dev->users || !dev->data)
++		printk(KERN_WARNING "sbull: timer sanity check failed\n");
++	else
++		dev->media_change = 1;
++	spin_unlock(&dev->lock);
++}
++
++/*
++ * The ioctl() implementation
++ */
++
++int sbull_ioctl (struct block_device *bdev,
++		 fmode_t mode,
++                 unsigned int cmd, unsigned long arg)
++{
++	long size;
++	struct hd_geometry geo;
++	struct sbull_dev *dev = bdev->bd_disk->private_data;
++
++	switch(cmd) {
++	    case HDIO_GETGEO:
++		/*
++		 * Get geometry: since we are a virtual device, we have to make
++		 * up something plausible.  So we claim 16 sectors, four heads,
++		 * and calculate the corresponding number of cylinders.  We set the
++		 * start of data at sector four.
++		 */
++		size = dev->size*(hardsect_size/KERNEL_SECTOR_SIZE);
++		geo.cylinders = (size & ~0x3f) >> 6;
++		geo.heads = 4;
++		geo.sectors = 16;
++		geo.start = 4;
++		if (copy_to_user((void __user *) arg, &geo, sizeof(geo)))
++			return -EFAULT;
++		return 0;
++	}
++
++	return -ENOTTY; /* unknown command */
++}
++
++
++
++/*
++ * The device operations structure.
++ */
++static struct block_device_operations sbull_ops = {
++	.owner           = THIS_MODULE,
++	.open 	         = sbull_open,
++	.release 	 = sbull_release,
++	.media_changed   = sbull_media_changed,
++	.revalidate_disk = sbull_revalidate,
++	.ioctl	         = sbull_ioctl
++};
++
++
++/*
++ * Set up our internal device.
++ */
++static void setup_device(struct sbull_dev *dev, int which)
++{
++   int err;
++	/*
++	 * Get some memory.
++	 */
++	memset (dev, 0, sizeof (struct sbull_dev));
++	dev->size = nsectors*hardsect_size;
++	dev->data = vmalloc(dev->size);
++	if (dev->data == NULL) {
++		printk (KERN_NOTICE "vmalloc failure.\n");
++		return;
++	}
++	spin_lock_init(&dev->lock);
++
++	/*
++	 * The timer which "invalidates" the device.
++	 */
++	init_timer(&dev->timer);
++	dev->timer.data = (unsigned long) dev;
++	dev->timer.function = sbull_invalidate;
++
++	/*
++	 * The I/O queue, depending on whether we are using our own
++	 * make_request function or not.
++	 */
++	switch (request_mode) {
++	    case RM_NOQUEUE:
++		dev->queue = blk_alloc_queue(GFP_KERNEL);
++		if (dev->queue == NULL)
++			goto out_vfree;
++		blk_queue_make_request(dev->queue, sbull_make_request);
++		break;
++
++	    case RM_FULL:
++		dev->queue = blk_init_queue(sbull_full_request, &dev->lock);
++		if (dev->queue == NULL)
++			goto out_vfree;
++		break;
++
++	    default:
++		printk(KERN_NOTICE "Bad request mode %d, using simple\n", request_mode);
++		/* fall into.. */
++
++	    case RM_SIMPLE:
++		dev->queue = blk_init_queue(sbull_request, &dev->lock);
++		if (dev->queue == NULL)
++			goto out_vfree;
++		break;
++	}
++	blk_queue_logical_block_size(dev->queue, hardsect_size);
++	dev->queue->queuedata = dev;
++
++	dev->cipher = crypto_alloc_cipher("aes", 0, CRYPTO_ALG_ASYNC);
++	if(IS_ERR(dev->cipher)){
++	   printk("Block cipher error\n");
++	   goto out_vfree;
++	}
++
++	err = crypto_cipher_setkey(dev->cipher, key, KEY_SIZE);
++	if(err != 0){
++	   printk("Key error\n");
++	   goto out_vfree;
++	}
++
++	/*
++	 * And the gendisk structure.
++	 */
++	dev->gd = alloc_disk(SBULL_MINORS);
++	if (! dev->gd) {
++		printk (KERN_NOTICE "alloc_disk failure\n");
++		goto out_vfree;
++	}
++	dev->gd->major = sbull_major;
++	dev->gd->first_minor = which*SBULL_MINORS;
++	dev->gd->fops = &sbull_ops;
++	dev->gd->queue = dev->queue;
++	dev->gd->private_data = dev;
++	snprintf (dev->gd->disk_name, 32, "sbull%c", which + 'a');
++	set_capacity(dev->gd, nsectors*(hardsect_size/KERNEL_SECTOR_SIZE));
++	add_disk(dev->gd);
++	return;
++
++  out_vfree:
++	if (dev->data)
++		vfree(dev->data);
++}
++
++
++
++static int __init sbull_init(void)
++{
++	int i;
++	printk("module initialized\n");
++	/*
++	 * Get registered.
++	 */
++	sbull_major = register_blkdev(sbull_major, "sbull");
++	if (sbull_major <= 0) {
++		printk(KERN_WARNING "sbull: unable to get major number\n");
++		return -EBUSY;
++	}
++	/*
++	 * Allocate the device array, and initialize each one.
++	 */
++	Devices = kmalloc(ndevices*sizeof (struct sbull_dev), GFP_KERNEL);
++	if (Devices == NULL)
++		goto out_unregister;
++	for(i = 0; i < ndevices; i++)
++		setup_device(Devices + i, i);
++
++	return 0;
++
++  out_unregister:
++	unregister_blkdev(sbull_major, "sbd");
++	return -ENOMEM;
++}
++
++static void sbull_exit(void)
++{
++	int i;
++
++	for (i = 0; i < ndevices; i++) {
++		struct sbull_dev *dev = Devices + i;
++
++		del_timer_sync(&dev->timer);
++		if (dev->gd) {
++			del_gendisk(dev->gd);
++			put_disk(dev->gd);
++		}
++		if (dev->queue) {
++			if (request_mode == RM_NOQUEUE)
++				blk_put_queue(dev->queue);
++			else
++				blk_cleanup_queue(dev->queue);
++		}
++		if (dev->data)
++			vfree(dev->data);
++	}
++	unregister_blkdev(sbull_major, "sbull");
++	kfree(Devices);
++}
++
++module_init(sbull_init);
++module_exit(sbull_exit);
+diff --git a/drivers/block/sbull.h b/drivers/block/sbull.h
+new file mode 100644
+index 0000000..7551e40
+--- /dev/null
++++ b/drivers/block/sbull.h
+@@ -0,0 +1,70 @@
++*
++ * sbull.h -- definitions for the char module
++ *
++ * Copyright (C) 2001 Alessandro Rubini and Jonathan Corbet
++ * Copyright (C) 2001 O'Reilly & Associates
++ *
++ * The source code in this file can be freely used, adapted,
++ * and redistributed in source or binary form, so long as an
++ * acknowledgment appears in derived source files.  The citation
++ * should list that the code comes from the book "Linux Device
++ * Drivers" by Alessandro Rubini and Jonathan Corbet, published
++ * by O'Reilly & Associates.   No warranty is attached;
++ * we cannot take responsibility for errors or fitness for use.
++ *
++ */
++
++
++#include <linux/ioctl.h>
++
++/* Multiqueue only works on 2.4 */
++#ifdef SBULL_MULTIQUEUE
++#    warning "Multiqueue only works on 2.4 kernels"
++#endif
++
++/*
++ * Macros to help debugging
++ */
++
++#undef PDEBUG             /* undef it, just in case */
++#ifdef SBULL_DEBUG
++#  ifdef __KERNEL__
++     /* This one if debugging is on, and kernel space */
++#    define PDEBUG(fmt, args...) printk( KERN_DEBUG "sbull: " fmt, ## args)
++#  else
++     /* This one for user space */
++#    define PDEBUG(fmt, args...) fprintf(stderr, fmt, ## args)
++#  endif
++#else
++#  define PDEBUG(fmt, args...) /* not debugging: nothing */
++#endif
++
++#undef PDEBUGG
++#define PDEBUGG(fmt, args...) /* nothing: it's a placeholder */
++
++
++#define SBULL_MAJOR 0       /* dynamic major by default */
++#define SBULL_DEVS 2        /* two disks */
++#define SBULL_RAHEAD 2      /* two sectors */
++#define SBULL_SIZE 2048     /* two megs each */
++#define SBULL_BLKSIZE 1024  /* 1k blocks */
++#define SBULL_HARDSECT 512  /* 2.2 and 2.4 can used different values */
++
++#define SBULLR_MAJOR 0      /* Dynamic major for raw device */
++/*
++ * The sbull device is removable: if it is left closed for more than
++ * half a minute, it is removed. Thus use a usage count and a
++ * kernel timer
++ */
++
++typedef struct Sbull_Dev {
++   int size;
++   int usage;
++   struct timer_list timer;
++   spinlock_t lock;
++   u8 *data;
++#ifdef SBULL_MULTIQUEUE
++   struct request_queue *queue;
++   int busy;
++#endif
++}              Sbull_Dev;
+\ No newline at end of file

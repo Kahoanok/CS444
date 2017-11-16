@@ -42,7 +42,7 @@
 
 \begin{document}
 
-\title{CS444 Project 2}
+\title{CS4444 Project 2}
 \date{October 30, 2017}
 \author{Shawn Cross, Ryan Crane}
 \maketitle
@@ -59,16 +59,6 @@ requests are inserted into the queue based on position.
 
 \section{Version Control log}
 \input{changes.tex}
-
-\section{Work Log}
-Thursday 10/26 6:00 pm to 8:00 pm\\\\
-started assignment mostly reading up on Kernel.\\\\ 
-Friday 10/27 12:00 pm to 4:00 pm \\\\
-modified config and makefiles to adopt our new scheduler.\\\\
-Sunday 10/29 12:00 pm to 5:00 pm \\\\
-Implemented Look algorithm and started the \LaTeX document.\\\\
-Monday 10/9 12:00 pm to 2:00 pm \\\\
-Finished the \LaTeX document.\\\\
 
 \section{Main point of the assignment}
 We believe that the main point of the assignment was to understand how requests 
@@ -117,66 +107,30 @@ can be a ton of I/O requests and they can all happen very quickly. We also
 learned that there are many different ways to do the scheduling. 
 
 \section{TA Evaluation}
-Steps for applying patch to clean linux-yocto-3.19 tree.\\\\
-\begin{enumerate}
-\item{step 1: }
-   clone new repo from github using the command\\\\
-   git clone git://git.yoctoproject.org/linux-yocto-3.19
-\item{step 2: }
-   switch to the 3.19.2 by using the command\\\\
-   git checkout -b linux-yocto-3.19.2
-\item{step 3: }
-   copy the file /scratch/fall2017/files/config-3.19.2-yocto-qemu into a file 
-   named .config into the source root of the repo that you just cloned.
-\item{step 4: }
-   Now source the environment configuration. If you are using bash you will 
-   need to source /scratch/fall2017/files/environment-setup-i586-poky-linux 
-   and if you are using tcsh you will need  to source 
-   /scratch/fall2017/files/environment-setup-i586-poky-linux.csh
-\item{step 5: }
-   You need to apply the patch we provided to the repo by using the command\\\\
-   git apply [path to patch file] where path to patch file is the path you need 
-   to the patch file that we have provided.
-\item{step 6: }
-   You now need to make the kernel by running the command make -j4 
-\item{step 7: }
-   Once the kernel is created you will need to run the vm using the command\\\\
-   qemu-system-i386 -gdb tcp::???? -S -nographic -kernel [path to bzImage] -drive file=[path to core image] -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/hda rw console=ttyS0 debug\\\\
-   Where [path to core image] is the file found in\\\\ 
-   /scratch/fall2017/files/core-image-lsb-sdk-qemux86.ext4\\\\
-   and the [path to bzImage] for me would be the bzImage found in\\\\
-   linux-yocto-3.19/arch/x86/boot/bzImage\\\\
-   and the ???? are the port number that you want to connect gdb to remotely.\\\\
-   After this command is run the terminal will halt.
-\item{step 8: }
-   you will now need to run \$GDB in a new terminal window. You may need soucre 
-   the enviroment again as you did in step 4 previously if you did start a new 
-   termial session and the \$GDB command does not work. Once gdb is running you 
-   will use the command\\\\
-   target remote :????\\\\
-   where the ???? are the same as the port that you had specified in step 7.
-\item{step 9: }
-   Once you have gdb is remotely connected you can type continue and the terminal 
-   with the vm halted will begin to boot. You will be asked if you want to use the 
-   sstf scheduler. You should be able to press y and then enter and and you will 
-   be promted about which scheduler to use again. I beleive our is option 4 but 
-   pick the number that is next to the sstf option. The booting will continue 
-   after this and eventually you will see our print statements about requests being 
-   added and dispatched. You should evtually see a login promt but you may also miss 
-   it from all of the print statements. Wait a few seconds and then eventually the 
-   print statements will stop. type root to login and you will begin to see more 
-   print statement. You will notice that some will have first request added and 
-   then immidiatley see a statemet about the request being dispatched. You will 
-   then see points at which multiple requests are added and then see that our 
-   scheduler is in fact moving forward and backward. and eventually the statements 
-   will stop coming and you can then look and see that our schedular is working as 
-   we had wanted it to by examining the previous statements that were outputted to 
-   the terminal.
-\item{step 10: }
-   To shutdown the vm you simply need to type reboot and press enter. Once the 
-   vm has shut down you can then exit gdb by typing quit into the terminal that 
-   you have gdb open in.
-   
-\end{enumerate}
+First you must make clone a clean tree to apply our patch to. To do this you 
+must clone this repo by using this command\\\\
+git://git.yoctoproject.org/linux-yocto-3.19\\\\
+in the directory that you want the repo. Then you will need to switch to the 
+3.19.2 version by using this command.\\\\
+git checkout -b linux-yocto-3.19.2\\\\
+Next you will need to copy the config-3.19.2-yocto-qemu into a file called .config
+from the files directroy into the linux-yocto-3.19 directory.
+After you have copied the file in the linux-yocto-3.19 directory you will need to 
+source the directory by using the following command\\\\
+in bash shells use\\
+source "path to files directory"/encironment-setup-i586-poky-linux\\
+in tcsh shells use\\
+source "path to files directory"/encironment-setup-i586-poky-linux.csh\\\\
+Then apply our patch by\\\\
+git apply sstfio.patch\\\\
+after the patch is applied you will need to build the kernel by running\\\\
+make -j4\\\\
+Then you will need to run the VM with our bzImage which can be found in
+the\\\\
+linux-yocto-3.19\{\}arch\{\}x86\{\}boot\{\}bxImage
+
+
+
+
 
 \end{document}

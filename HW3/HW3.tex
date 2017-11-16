@@ -110,11 +110,31 @@ Steps for applying patch to clean linux-yocto-3.19 tree.\\\\
    then type continue and the first terminal should start.
 \item{step 9:}
    You need to then scp the sbull.ko file in and then scp the provided script test.sh.
+
+   once you have both in the vm run ./test.sh this will set up and mount the module to
+   a directory named tempmount. The script can take a little bit of time.
+
+   if the test script doesn't work here are the stpes to follow.\\
+
+   first: insmod sbull.ko\\
+   second: fdisk /dev/sbulla\\
+   third: when promted in fdisk press g then enter then n then enter until it prompts 
+   for another letter and then press w and then enter. This will create a partition.\\
+   forth: mkfs.ext2 /dev/sbulla\\
+   fifth: mkdir tempmount\\
+   sixth: mount /dev/sbulla1 /tempmount\\
 \item{step 10:}
-   Type echo 'hello world' > tempmount/hello\\
+   Type echo 'hello world' > tempmount/hello
+   
+   When you do this it will show two longer number one after the other. This can also 
+   happen mutiple times depending on the size of what is being passed to the module.
+   The fisrt number is the data before it is encrypted and the second is the encryped 
+   data. They are different which shows that the encryption worked. 
+   
    Then type cat tempmount/hello
-   This shows that the data being entered is different than what is acutally being stored and that once the data is decrypted the data is back to 
-   it's original form.
+
+   This should show the what was originally passed in in it's unecrypted form 
+   showing that the decryption has worked. 
    
    
 \end{enumerate}
