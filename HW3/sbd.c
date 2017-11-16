@@ -18,7 +18,7 @@
 #include <linux/genhd.h>
 #include <linux/blkdev.h>
 #include <linux/hdreg.h>
-
+#include <linux/crypto.h>
 MODULE_LICENSE("Dual BSD/GPL");
 static char *Version = "1.4";
 
@@ -28,13 +28,14 @@ static int logical_block_size = 512;
 module_param(logical_block_size, int, 0);
 static int nsectors = 1024; /* How big the drive is */
 module_param(nsectors, int, 0);
-
+static char *key = "00000000000000000000000000000000";
+module_param(key, charp, 0400);
 /*
  * We can tweak our hardware sector size, but the kernel talks to us
  * in terms of small sectors, always.
  */
 #define KERNEL_SECTOR_SIZE 512
-
+#define KEY_SIZE 32
 /*
  * Our request queue.
  */
@@ -48,6 +49,8 @@ static struct sbd_device {
 	spinlock_t lock;
 	u8 *data;
 	struct gendisk *gd;
+
+	struct crypto_cipher *cipher;
 } Device;
 
 /*
@@ -58,14 +61,28 @@ static void sbd_transfer(struct sbd_device *dev, sector_t sector,
 	unsigned long offset = sector * logical_block_size;
 	unsigned long nbytes = nsect * logical_block_size;
 
+	unsigned long blocksize = crypto_cipher_blocksize(dev->cipher);
+	int i;
+	int counter = 0;
+
 	if ((offset + nbytes) > dev->size) {
 		printk (KERN_NOTICE "sbd: Beyond-end write (%ld %ld)\n", offset, nbytes);
 		return;
 	}
-	if (write)
-		memcpy(dev->data + offset, buffer, nbytes);
-	else
-		memcpy(buffer, dev->data + offset, nbytes);
+	if (write){
+	   	for(i = 0;i < nbytes; i += blocksize){
+			crypto_cipher_encrypt_one(dev->cipher,&(dev->data + offset)[i], &buffer[i]);	
+		}
+	       /* printk("UNENCRYPTED: ");
+		data_view(&buffer,nbytes);
+		printk("ENCRYTPED: ");
+		data_view(&(dev->data + offset), nbytes);*/	
+	}
+	else{
+	   	for(i = 0;i < nbytes; i += blocksize){
+			crypto_cipher_decrypt_one(dev->cipher,&(dev->data + offset)[i], &buffer[i]);	
+		} 
+	}
 }
 
 static void sbd_request(struct request_queue *q) {
@@ -115,6 +132,8 @@ static struct block_device_operations sbd_ops = {
 };
 
 static int __init sbd_init(void) {
+   int err;
+   printk("here I am\n");
 	/*
 	 * Set up our internal device.
 	 */
@@ -138,6 +157,18 @@ static int __init sbd_init(void) {
 		printk(KERN_WARNING "sbd: unable to get major number\n");
 		goto out;
 	}
+
+	Device.cipher = crypto_alloc_cipher("aes", 0, CRYPTO_ALG_ASYNC);
+	if(IS_ERR(Device.cipher)){
+		printk("block cipher error\n");
+		goto out;
+	}
+	err = crypto_cipher_setkey(Device.cipher, key, KEY_SIZE);
+	if(err != 0){
+		printk("key error\n");
+		goto out;
+	}
+
 	/*
 	 * And the gendisk structure.
 	 */
