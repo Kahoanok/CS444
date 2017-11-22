@@ -1,0 +1,97 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+%\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+%\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Ryan Crane and Shawn Cross}
+
+%pull in the necessary preamble matter for pygments output
+%\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs444 ``operating systems'' files filesystem I/O},
+  pdftitle = {CS 444 Project 1: UNIX File I/O},
+  pdfsubject = {CS 444 Project 1},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+\section{How To Run} To compile the program simply 
+
+run: make all
+
+Then to run the first problem 
+
+run: sushi
+
+Finally to run the second problem 
+
+run: list
+
+\section{Problem 1.} For the first problem we found that this was very similar 
+to the sushi bar problem in the little book of semaphores. We followed the 
+psudo code that the gave as a solution. We create create 20 threads that will 
+run forever. In the function we have a must\_wait variable that is false if 
+less than 3 processes are using a resource and ture if 3 are. If this is set to 
+true then then processes will be blocked in the must wait until all 3 processes 
+are finished. We have an if statement that checks if you are the last person 
+eating and if the must\_wait flag is set if both are true then we unlock the 
+mutex that is blocking the rest of the processes and allow them to go. This 
+program will run forever but looking at the outputs will show that the 
+program is working correctly. You will see that when there are less than 
+three eating processes are coming and going freely. However, when there 
+are three processes then everyone else will be waiting until the three 
+processes have finished and then others will start to eat again.
+
+\section{Problem 2.} For this problem we first created the linked list functions 
+that we were going to need, Insert, pop, and delete. Next we created the 
+ligthswitch functions that the book suggested we use. These check if you are 
+the first searcher and if you are then lock the semaphore and keep track of 
+the number of searchers. If you are the last searcher to leave then unlock 
+the semaphore. This is similar for the inserter as well. For our searchers 
+function we first lock the lightswitch and then get a random value to enter. 
+next we search through the list and if the value is found we say we found it, 
+and if on we say we didn't find it. Then we unlock the lightswitch. For 
+inserters we first get a random number to insert and then lock our lightswitch 
+we also block any other inserters from getting in as well. The value is then 
+inseted into the list the size of the list is increased and we print what was 
+inserted. The mutex blocking other inserters is unlocked and the lightswitch is 
+is also unlocked. Finally the deleter function checks the size of the list and 
+then from that picks a random index between 0 and size to delete. It then trys 
+to wait on the insert and search lightswitch semaphores and can only delete 
+if neither of them are blocking. If neither are then it waits on both causing 
+them to block everyone else out, deletes the index, prints what was deleted, 
+and then finally unblocks everyone. At the start of the program we create an 
+initial list to use. we then create 10 of each type of thread and then they 
+run. You can see for the outputs of this program that while searching is 
+happening an insert is still able to happen but no deletes. and you will 
+also notice that only the delete is allowed to happen and searchers and 
+inserters aren't allowed to do anything.
+
+\end{document}
