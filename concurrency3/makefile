@@ -41,7 +41,7 @@ showps: $(PSF)
 	@for i in $(PSF) ; do $(GH) $$i & done
 
 sushi: sushi.c
-	gcc -o sushi sushi.c -lpthread
+	gcc -o problem1 sushi.c -lpthread
 
 list: list.c
 	gcc -o list list.c -lpthread
@@ -49,7 +49,7 @@ list: list.c
 all: pdf sushi list
 
 clean:
-	rm -f *.pdf *.ps *.dvi *.out *.log *.aux *.bbl *.blg *.pyg sushi list
+	rm -f *.pdf *.ps *.dvi *.out *.log *.aux *.bbl *.blg *.pyg problem1 list
 
 .PHONY: all show clean ps pdf showps
 

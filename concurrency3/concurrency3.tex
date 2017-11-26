@@ -48,7 +48,7 @@ run: make all
 
 Then to run the first problem 
 
-run: sushi
+run: problem1
 
 Finally to run the second problem 
 
@@ -56,18 +56,22 @@ run: list
 
 \section{Problem 1.} For the first problem we found that this was very similar 
 to the sushi bar problem in the little book of semaphores. We followed the 
-psudo code that the gave as a solution. We create create 20 threads that will 
+psudo code that they gave as a solution. We create seven threads that will 
 run forever. In the function we have a must\_wait variable that is false if 
-less than 3 processes are using a resource and ture if 3 are. If this is set to 
-true then then processes will be blocked in the must wait until all 3 processes 
+less than three processes are using a resource and ture if three are. If this is set to 
+true then then processes will be blocked in the must wait function until all 3 processes 
 are finished. We have an if statement that checks if you are the last person 
-eating and if the must\_wait flag is set if both are true then we unlock the 
+eating and if the must\_wait flag is set, if both are true then we unlock the 
 mutex that is blocking the rest of the processes and allow them to go. This 
 program will run forever but looking at the outputs will show that the 
 program is working correctly. You will see that when there are less than 
 three eating processes are coming and going freely. However, when there 
-are three processes then everyone else will be waiting until the three 
-processes have finished and then others will start to eat again.
+are three processes using the resources then everyone else will be waiting 
+until the three processes have finished and then others will start to eat again.
+
+To end this program use ctrl-c. It also may take awhile for the program to 
+output processes coming and going freely but it shouldn't take more than 
+two minutes.
 
 \section{Problem 2.} For this problem we first created the linked list functions 
 that we were going to need, Insert, pop, and delete. Next we created the 
@@ -77,7 +81,7 @@ the number of searchers. If you are the last searcher to leave then unlock
 the semaphore. This is similar for the inserter as well. For our searchers 
 function we first lock the lightswitch and then get a random value to enter. 
 next we search through the list and if the value is found we say we found it, 
-and if on we say we didn't find it. Then we unlock the lightswitch. For 
+and if not we say we didn't find it, then we unlock the lightswitch. For 
 inserters we first get a random number to insert and then lock our lightswitch 
 we also block any other inserters from getting in as well. The value is then 
 inseted into the list the size of the list is increased and we print what was 

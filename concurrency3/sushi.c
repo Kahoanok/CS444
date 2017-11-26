@@ -13,8 +13,6 @@ int waiting = 0;
 sem_t block;
 int must_wait = 0;
 pthread_mutex_t mutex;
-pthread_mutex_t eatm;
-pthread_mutex_t waitm;
 
 unsigned int get_num(){
 	unsigned int eax;
@@ -45,24 +43,18 @@ unsigned int get_num(){
 
 void * sushi_start(void* x){
    while(1){
-	sleep((get_num()%5)+1);
+	sleep((get_num()%10)+1);
 	pthread_mutex_lock(&mutex);
 	
 	if(must_wait == 1){
-		pthread_mutex_lock(&waitm);
 		waiting++;
-		pthread_mutex_unlock(&waitm);
 		printf("I must wait, there are %d threads waiting\n", waiting);
 		pthread_mutex_unlock(&mutex);
 		sem_wait(&block);
-		pthread_mutex_lock(&waitm);
 		waiting--;
-		pthread_mutex_unlock(&waitm);
 	}
 
-	pthread_mutex_lock(&eatm);
 	eating++;
-	pthread_mutex_unlock(&eatm);
 	printf("I am now eating, there are %d threads eating\n", eating);
 	if(eating == 3){
 		must_wait = 1;
@@ -76,10 +68,8 @@ void * sushi_start(void* x){
 	
 	sleep((get_num()%5)+1);
 
-	pthread_mutex_unlock(&mutex);
-	pthread_mutex_lock(&eatm);
+	pthread_mutex_lock(&mutex);
 	eating--;
-	pthread_mutex_unlock(&eatm);
 	printf("I am done eating %i\n", eating);
 	if(eating==0){
 		must_wait = 0;
@@ -100,12 +90,12 @@ void * sushi_start(void* x){
 int main(){
 unsigned long seed;
 int c = 0;
-pthread_t eaters[10];
+pthread_t eaters[7];
 	seed = time(NULL);
 	init_genrand(seed);
 	sem_init(&block,0,0);
 
-	for(c = 0; c<10; c++){
+	for(c = 0; c<7; c++){
 		pthread_create(&(eaters[c]),NULL,sushi_start,NULL);
 	}
 

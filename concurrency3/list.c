@@ -219,8 +219,13 @@ pthread_t deleter[10];
 		pthread_create(&(inserter[c]),NULL,inserter_start,NULL);
 		pthread_create(&(deleter[c]),NULL,deleter_start,NULL);
 	}
+	for(c=0;c<10;c++){
+		pthread_join(searcher[c],NULL);
+		pthread_join(inserter[c],NULL);
+		pthread_join(deleter[c],NULL);
+	}
 
-	while(1){}
+	//while(1){}
 
 return 0;
 }
