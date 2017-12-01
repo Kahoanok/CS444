@@ -1,0 +1,188 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+%\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+%\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Ryan Crane and Shawn Cross}
+
+%pull in the necessary preamble matter for pygments output
+%\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs444 ``operating systems'' files filesystem I/O},
+  pdftitle = {CS 444 Project 1: UNIX File I/O},
+  pdfsubject = {CS 444 Project 1},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+\title{Assignment 4}
+\date{December 1, 2017}
+\author{Shawn Cross, Ryan Crane}
+\maketitle
+
+\section{Plan for Implementation}
+
+For this project we plan our plan is to try and first find a way to apply the 
+best fit solution and then we will use the system calls to determine the 
+fragmentation that we are getting with this solution. We will then compare 
+that to the fragmentation of the first fit solution. 
+
+\section{Version Control Log}
+\begin{tabular}{l l l}\textbf{detail} & \textbf{author} & \textbf{description}\\\hline
+\href{https://github.com/crosssh/cs444/commit/90c833816bad716ceedd20fe1b47ce2d5822b3e0}{90c8338} & shawn cross & git sucks so bad.\\\hline
+\href{https://github.com/crosssh/cs444/commit/c258d8693943c8d485286b946f36b00db533652c}{c258d86} & narxy & update hw3.tex\\\hline
+\href{https://github.com/crosssh/cs444/commit/6ee4b6b1f3698e604beb00abe07b3988e9ab4f29}{6ee4b6b} & shawn cross & finished the crytpo working on write up\\\hline
+\href{https://github.com/crosssh/cs444/commit/36001ddeb5eecb218672829156a124c4a0971a8e}{36001dd} & crosssh & update to the tex file\\\hline
+\href{https://github.com/crosssh/cs444/commit/625287fc9915eb508139598719b3c66a33ecc80e}{625287f} & shawn cross & finishing up the write up\\\hline\end{tabular}
+
+\section{Work Log}
+Thursday November 9th 10 - 11am 
+reviewed the assignment, looked example block drivers
+Sunday November 12th 12 - 4pm
+integrated template block driver with linux, couldn't mount
+Tuesday November 14th 10 - 11am
+started tex document
+Wednesday November 15th 1pm - 12am
+modified block driver to encrypt.decrypt data and mounted in kernel
+made shell script for testing
+thursday November 16th 10 - 11am
+finished patch file and tex document
+\section{Project Questions}
+
+\subsection{Main point of the assignment}
+The main point of this assignment is to teach us about how memory is managed 
+in the linux kernel as well as teach us that some times a solution that sounds
+the best is not always the right solution.
+
+\subsection{How did we approach the problem}
+We knew we needed to edit the current slob file to use best fit instead of first 
+fit. So we decide to try and figure out how to do this first. We came up with a 
+simple solution. Set our page struct equal to the orignal one and then check if 
+the next one is smaller if it is set our equal to it. Then check if the current 
+spot is equal to out chunk and if it is put it in that spot if not then try the 
+next spot. Continue doing this until we find a spot that is either the same or 
+the next page is NULL. In this case you would put it in the next best spot 
+or create a new page. Then for the  system call we just find the number of 
+pages being used and then multiple it by the size of a page. For the free 
+space we loop thorough all the pages finding all the free units and then add them 
+together. We then us these to find the percentage of fragmentation.
+
+\subsection{Ensure correctness and details of how to preform}
+\section{TA Evaluation}
+Steps for applying patch to clean linux-yocto-3.19 tree.\\\\
+\begin{enumerate}
+\item{step 1: }
+   clone new repo from github using the command\\\\
+   git clone git://git.yoctoproject.org/linux-yocto-3.19
+\item{step 2: }
+   switch to the 3.19.2 by using the command\\\\
+   git checkout -b linux-yocto-3.19.2
+\item{step 3: }
+   copy the file /scratch/fall2017/files/config-3.19.2-yocto-qemu into a file 
+   named .config into the source root of the repo that you just cloned.
+\item{step 4: }
+   Now source the environment configuration. If you are using bash you will 
+   need to source /scratch/fall2017/files/environment-setup-i586-poky-linux 
+   and if you are using tcsh you will need  to source 
+   /scratch/fall2017/files/environment-setup-i586-poky-linux.csh
+\item{step 5: }
+   You need to apply the patch we provided to the repo by using the command\\\\
+   git apply [path to patch file] where path to patch file is the path you need 
+   to the patch file that we have provided. We have provided two patches 
+   firstFit.patch will be for the original slob that comes with the fresh kernel 
+   and then adds the system call function for testing. The best\_fit.patch 
+   is our best fit solution along with the system call stuff as well. You can 
+   apply either wbut you will have to go back and clone a new repo before testing 
+   the other. 
+\item{step 6: } 
+   Yow will need to now run the command make menuconfig. Once this is done a 
+   menu will open and you will need to scroll down and change from using slub 
+   to using slob. This is in general setup towards the botton in the option 
+   choose slab allocator.
+\item{step 7: }
+   You now need to make the kernel by running the command make -j4 
+\item{step 8: }
+   Once the kernel is created you will need to run the vm using the command\\\\
+   qemu-system-i386 -gdb tcp::5550 -S -nographic -kernel [path to bzImage] -drive file=[path to core image],if=virtio -enable-kvm -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"\\\\
+   Where [path to core image] is the file found in\\\\ 
+   /scratch/fall2017/files/core-image-lsb-sdk-qemux86.ext4\\\\
+   and the [path to bzImage] for me would be the bzImage found in\\\\
+   linux-yocto-3.19/arch/x86/boot/bzImage\\\\
+   and the ???? are the port number that you want to connect gdb to remotely.\\\\
+   After this command is run the terminal will halt.
+\item{step 9: }
+   you will now need to run \$GDB in a new terminal window. You may need soucre 
+   the enviroment again as you did in step 4 previously if you did start a new 
+   termial session and the \$GDB command does not work. Once gdb is running you 
+   will use the command\\\\
+   target remote :????\\\\
+   where the ???? are the same as the port that you had specified in step 7.\\\\
+   then type continue and the first terminal should start.
+\item{step 10:}
+   You need to then scp the the page\_test.c and the mt19937.h files that we provided 
+   over to your running vm 
+
+\item{step 11:}
+   You will then need to comiple this program by using the command: gcc page\_test.c\\
+   then you can run it by running: ./a.out\\\\
+   this will output a bunch of precentages. These precentages are the amount of free 
+   free space avalible. The program mallocs and free's a bunch of random size arrays.
+   You will notice that as the malloc's and free's happen you will see that we the 
+   precentages are increasing and decreasing. This goes along with the idea that as 
+   we are using more space the amout of free space will decreas and as we free the 
+   amount of space will increase. There are some random flucuation we believe this is 
+   because as pages are added or removed the amount of free space would increase 
+   quite a bit from this.
+
+\item{step 12:}
+   Now you will need to repeat theses steps to use the other patch that we have 
+   provided. You can either revert the repo back to its original state and then 
+   apply the other patch or you can download a fresh repo. Once you have does this 
+   you can start from either step on if you want a fresh repo or step two if you 
+   reverted the repo.
+
+\item{Best fit Vs First fit: }
+   One thing we did notice is that with the first fit solution the percentage of 
+   free space is much less than what we got for when we applied our best fit 
+   soultion. we are not exactly sure why this is but we did notice that our 
+   solution is flucuating the same way that the first fit is. We believe that 
+   this shows that our solution is in fact working and that the space is being 
+   allocated the way that it is supposed to be.
+   
+\end{enumerate}
+\subsection{What did we learn}
+During this project we learned that while some solution seem to be the better 
+idea it doesn't mean that they are the better way to do it. while first fit 
+does seem to use a little more space and leaves more small holes in each page 
+it also doesn't take as long to do. Our version of best fit causes adding and 
+freeing space to take a lot more time to a point where the outcome is not a 
+benifit. 
+
+\end{document}
