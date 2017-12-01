@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=latex 2016.10.17)  1 DEC 2017 15:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=latex 2016.10.17)  1 DEC 2017 15:49
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -434,7 +434,17 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 98--100
+Underfull \hbox (badness 10000) in paragraph at lines 66--76
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 66--76
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 66--76
 
  []
 
@@ -444,11 +454,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 98--100
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100--103
+Underfull \hbox (badness 10000) in paragraph at lines 98--100
 
  []
 
 [1]
+Underfull \hbox (badness 10000) in paragraph at lines 100--103
+
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 103--106
 
  []
@@ -526,10 +541,10 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 187.
 Here is how much of TeX's memory you used:
  6522 strings out of 493014
  97142 string characters out of 6122796
- 190411 words of memory out of 5000000
+ 191411 words of memory out of 5000000
  9998 multiletter control sequences out of 15000+600000
  11503 words of font info for 45 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  29i,7n,28p,223b,443s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on HW4.dvi (4 pages, 19732 bytes).
+Output written on HW4.dvi (4 pages, 19724 bytes).
