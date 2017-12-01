@@ -55,25 +55,24 @@ fragmentation that we are getting with this solution. We will then compare
 that to the fragmentation of the first fit solution. 
 
 \section{Version Control Log}
-\begin{tabular}{l l l}\textbf{detail} & \textbf{author} & \textbf{description}\\\hline
-\href{https://github.com/crosssh/cs444/commit/90c833816bad716ceedd20fe1b47ce2d5822b3e0}{90c8338} & shawn cross & git sucks so bad.\\\hline
-\href{https://github.com/crosssh/cs444/commit/c258d8693943c8d485286b946f36b00db533652c}{c258d86} & narxy & update hw3.tex\\\hline
-\href{https://github.com/crosssh/cs444/commit/6ee4b6b1f3698e604beb00abe07b3988e9ab4f29}{6ee4b6b} & shawn cross & finished the crytpo working on write up\\\hline
-\href{https://github.com/crosssh/cs444/commit/36001ddeb5eecb218672829156a124c4a0971a8e}{36001dd} & crosssh & update to the tex file\\\hline
-\href{https://github.com/crosssh/cs444/commit/625287fc9915eb508139598719b3c66a33ecc80e}{625287f} & shawn cross & finishing up the write up\\\hline\end{tabular}
+\begin{tabular}{l l l}\textbf{Detail} & \textbf{Author} & \textbf{Description}\\\hline
+\href{https://github.com/crosssh/CS444/commit/77ef8915c0518852fc5179cfdcd9d13c765f43b0}{77ef891} & Shawn Cross & adding concurrency 3 files.\\\hline
+\href{https://github.com/crosssh/CS444/commit/493293c4ed6f02fa0ae80b534699703d705665b9}{493293c} & Shawn Cross & adding last files for concurrency 3\\\hline
+\href{https://github.com/crosssh/CS444/commit/a36cf1d987dc262bd9055c419b370a4d2b430c38}{a36cf1d} & Shawn Cross & adding the title page to the tex document\\\hline
+\href{https://github.com/crosssh/CS444/commit/a488836077a629fcc0e9ef43ac11cec51df94038}{a488836} & Shawn Cross & fixed small problem\\\hline
+\href{https://github.com/crosssh/CS444/commit/99fd75bdfb7c68d9498469a85f246ba4db9aa885}{99fd75b} & Shawn Cross & Adding assignment 4 forgot to commit the previous changes.\\\hline\end{tabular}
 
 \section{Work Log}
-Thursday November 9th 10 - 11am 
-reviewed the assignment, looked example block drivers
-Sunday November 12th 12 - 4pm
-integrated template block driver with linux, couldn't mount
-Tuesday November 14th 10 - 11am
-started tex document
-Wednesday November 15th 1pm - 12am
-modified block driver to encrypt.decrypt data and mounted in kernel
-made shell script for testing
-thursday November 16th 10 - 11am
-finished patch file and tex document
+Tuesday November 28th 10 - 11:30am 
+Began the assignment modified slob.c with a best fit solution,
+but couldn't make the kernel run it.
+Wednesday November 29th 1:30pm - 3:30pm
+Went to office hours for questions, got kernel to load slob code.
+Thursday November 30th 8:30am - 11:30am
+implemented best fit in the kernel and wrote the system calls.
+Began the test program to check memory use.
+Friday December 1st 9:00am - 4:00pm
+Finished testing program and wrote tex document.
 \section{Project Questions}
 
 \subsection{Main point of the assignment}
@@ -116,8 +115,8 @@ Steps for applying patch to clean linux-yocto-3.19 tree.\\\\
    You need to apply the patch we provided to the repo by using the command\\\\
    git apply [path to patch file] where path to patch file is the path you need 
    to the patch file that we have provided. We have provided two patches 
-   firstFit.patch will be for the original slob that comes with the fresh kernel 
-   and then adds the system call function for testing. The best\_fit.patch 
+   firstfit.patch will be for the original slob that comes with the fresh kernel 
+   and then adds the system call function for testing. The bestfit.patch 
    is our best fit solution along with the system call stuff as well. You can 
    apply either wbut you will have to go back and clone a new repo before testing 
    the other. 
